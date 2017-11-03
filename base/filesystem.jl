@@ -152,7 +152,7 @@ end
 function read(f::File, ::Type{Char})
     b0 = read(f, UInt8)
     n = leading_ones(b0)
-    c = UInt32(b0)
+    c = UInt32(b0) << 24
     if n <= 4
         while 1 < n && !eof(f)
             p = position(f)
@@ -161,8 +161,7 @@ function read(f::File, ::Type{Char})
                 seek(f, p)
                 break
             end
-            c <<= 8
-            c |= b
+            c |= UInt32(b) << 8n
             n -= 1
         end
     end
