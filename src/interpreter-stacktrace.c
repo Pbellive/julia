@@ -86,14 +86,14 @@ asm(
     "\tsubq $" XSTR(MAX_INTERP_STATE_SIZE) " + " XSTR(STACK_PADDING)", %rsp\n"
     ".cfi_def_cfa_offset " XSTR(MAX_INTERP_STATE_SIZE) " + " XSTR(STACK_PADDING)" + 8\n"
 #ifdef _OS_WINDOWS_
-    "\tmovq %rcx, %rax\n"
-    "\tleaq " XSTR(STACK_PADDING) "(%rsp), %rcx\n"
+#define ARG1_REG "rcx"
 #else
-     "\tmovq %rdi, %rax\n"
-     "\tleaq " XSTR(STACK_PADDING) "(%rsp), %rdi\n"
+#define ARG1_REG "rdi"
 #endif
+    "\tmovq %" ARG1_REG ", %rax\n"
+    "\tleaq " XSTR(STACK_PADDING) "(%rsp), %" ARG1_REG "\n"
     // Zero out the src field
-    "\tmovq $0, 0(%rdi)\n"
+    "\tmovq $0, 0(%" ARG1_REG ")\n"
 #ifdef _OS_WINDOWS_
     // Make space for the register parameter area
     "\tsubq $32, %rsp\n"
@@ -120,10 +120,10 @@ asm(
 #elif defined(_CPU_X86_)
 
 #define MAX_INTERP_STATE_SIZE 36
-#ifndef _OS_WINDOWS_
-#define STACK_PADDING 8
-#else
+#ifdef _OS_WINDOWS_
 #define STACK_PADDING 4
+#else
+#define STACK_PADDING 8
 #endif
 
 size_t TOTAL_STACK_PADDING = STACK_PADDING;
