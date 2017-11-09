@@ -3204,8 +3204,8 @@ let a = UInt8[0, 0, 0, 0, 0x66, 99, 254, 13, 0, 0, 0, 0]
     f11813(p) = ((Int32(3),UInt8(0x66)),Int32(0)) === unsafe_load(convert(Ptr{Tuple{Tuple{Int32,UInt8},Int32}},p))
     @test f11813(p) === true # redundant comparison test seems to make this test more reliable, don't remove
 end
-let a = (1:1000...),
-    b = (1:1000...)
+let a = (1:1000...,),
+    b = (1:1000...,)
     @test a == b
     @test a === b
     @test (a == b) === true
